@@ -4,9 +4,10 @@ const userRoutes = require('./routes/userRoutes');
 const cluster = require('cluster');
 const os = require('os');
 const dotenv = require('dotenv');
+const connectDB = require('./config/db');
 
 dotenv.config();
-
+connectDB();
 const app = express();
 const port = process.env.PORT || 3000;
 
