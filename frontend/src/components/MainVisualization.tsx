@@ -21,6 +21,7 @@ const Flow = () => {
   useEffect(() => {
     const userColors = ["#6A5ACD", "#FF6347", "#2E8B57", "#FFD700", "#20B2AA"];
 
+    // Create user nodes
     const userNodes = users.map((user, index) => ({
       id: user._id,
       type: "default",
@@ -35,6 +36,7 @@ const Flow = () => {
       },
     }));
 
+    // Create hobby nodes
     const hobbyNodes = users.flatMap((user) =>
       user.hobbies.map((hobby, index) => ({
         id: `hobby-${user._id}-${index}`,
@@ -50,12 +52,14 @@ const Flow = () => {
       }))
     );
 
+    // Create edges between user nodes and hobby nodes
     const hobbyEdges = users.flatMap((user) =>
       user.hobbies.map((hobby, index) => ({
         id: `edge-${user._id}-${index}`,
         source: user._id,
         target: `hobby-${user._id}-${index}`,
-        style: { stroke: "url(#gradient)" },
+        animated: true,
+        style: { stroke: "yellow", strokeWidth: 2 },
       }))
     );
 
@@ -103,6 +107,35 @@ const Flow = () => {
                   )
                 )
               );
+
+              // Add new hobby node and edge
+              const newNodeId = `hobby-${userToUpdate._id}-${updatedHobbies.length - 1}`;
+              const newNode = {
+                id: newNodeId,
+                type: "default",
+                data: { label: hobby },
+                position: {
+                  x: closestNode.position.x + Math.random() * 50,
+                  y: closestNode.position.y + Math.random() * 50,
+                },
+                style: {
+                  background: "#8F77B5",
+                  color: "#FFFFFF",
+                  border: "2px solid #FFFFFF",
+                  borderRadius: "8px",
+                },
+              };
+
+              const newEdge = {
+                id: `edge-${userToUpdate._id}-${updatedHobbies.length - 1}`,
+                source: closestNode.id,
+                target: newNodeId,
+                animated: true,
+                style: { stroke: "yellow", strokeWidth: 2 },
+              };
+
+              setNodes((nds) => [...nds, newNode]);
+              setEdges((eds) => [...eds, newEdge]);
             })
             .catch((error) => {
               console.error("Error updating user with new hobby:", error);
@@ -126,13 +159,6 @@ const Flow = () => {
         onEdgesChange={onEdgesChange}
         fitView
       >
-        {/* Gradient for edges */}
-        <defs>
-          <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#FF6347" />
-            <stop offset="100%" stopColor="#6A5ACD" />
-          </linearGradient>
-        </defs>
         <MiniMap nodeColor={(node) => node.style.background || "#8F77B5"} />
         <Controls />
         <Background color="#8F77B5" gap={16} />
