@@ -109,26 +109,13 @@ const UserForm: React.FC<UserFormProps> = ({ compact = false }) => {
 
   return (
     <div
-      className={`${
-        compact ? "bg-transparent" : "bg-[#2A2A40] shadow-lg"
-      } rounded-lg p-4`}
-    >
-      <form onSubmit={handleSubmit} className="flex items-center space-x-4">
-        {/* Select User for Edit */}
-        <select
-          value={selectedUserId}
-          onChange={(e) => setSelectedUserId(e.target.value)}
-          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
-        >
-          <option value="">Create New User</option>
-          {users.map((user) => (
-            <option key={user._id} value={user._id}>
-              {user.username}
-            </option>
-          ))}
-        </select>
-
-        {/* Username Input */}
+    className={`${
+      compact ? "bg-transparent" : "bg-[#2A2A40] shadow-lg"
+    } rounded-lg p-4 w-full flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4`}
+  >
+    <form onSubmit={handleSubmit} className="w-full flex flex-wrap">
+      <div className="flex-1">
+        {/* Username */}
         <input
           type="text"
           name="username"
@@ -137,11 +124,13 @@ const UserForm: React.FC<UserFormProps> = ({ compact = false }) => {
           onChange={(e) =>
             setUserDetails({ ...userDetails, username: e.target.value })
           }
-          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
+          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5] w-full"
           required
         />
-
-        {/* Age Input */}
+      </div>
+  
+      <div className="flex-1">
+        {/* Age */}
         <input
           type="number"
           name="age"
@@ -150,47 +139,48 @@ const UserForm: React.FC<UserFormProps> = ({ compact = false }) => {
           onChange={(e) =>
             setUserDetails({ ...userDetails, age: e.target.value })
           }
-          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
+          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5] w-full"
           required
         />
-
+      </div>
+  
+      <div className="flex-1 relative">
         {/* Hobbies Dropdown */}
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
-          >
-            Select Hobbies
-          </button>
-          {dropdownOpen && (
-            <div className="absolute mt-2 bg-[#2A2A40] border border-[#8F77B5] rounded-md shadow-lg w-48 z-20">
-              <ul className="p-2 max-h-40 overflow-y-auto">
-                {hobbyOptions.map((hobby) => (
-                  <li key={hobby} className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={userDetails.hobbies.includes(hobby)}
-                      onChange={() => handleCheckboxChange(hobby)}
-                      className="h-4 w-4 text-[#8F77B5] focus:ring-[#8F77B5]"
-                    />
-                    <span className="text-[#FFFFFF]">{hobby}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        {/* Submit Button */}
         <button
-          type="submit"
-          className="px-4 py-2 bg-[#8F77B5] text-[#FFFFFF] rounded-md hover:bg-[#A8A3D1] focus:outline-none focus:ring-2 focus:ring-[#A8A3D1]"
+          type="button"
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5] w-full"
         >
-          {isEditing ? "Update User" : "Create User"}
+          Select Hobbies
         </button>
-      </form>
-    </div>
+        {dropdownOpen && (
+          <div className="absolute mt-2 bg-[#2A2A40] border border-[#8F77B5] rounded-md shadow-lg w-full z-20 max-h-40 overflow-y-auto">
+            <ul className="p-2">
+              {hobbyOptions.map((hobby) => (
+                <li key={hobby} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={userDetails.hobbies.includes(hobby)}
+                    onChange={() => handleCheckboxChange(hobby)}
+                    className="h-4 w-4 text-[#8F77B5] focus:ring-[#8F77B5]"
+                  />
+                  <span className="text-[#FFFFFF]">{hobby}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+  
+      <button
+        type="submit"
+        className="px-4 py-2 bg-[#8F77B5] text-[#FFFFFF] rounded-md hover:bg-[#A8A3D1] focus:outline-none focus:ring-2 focus:ring-[#A8A3D1] w-full mt-4 md:mt-0"
+      >
+        {isEditing ? "Update User" : "Create User"}
+      </button>
+    </form>
+  </div>
+  
   );
 };
 

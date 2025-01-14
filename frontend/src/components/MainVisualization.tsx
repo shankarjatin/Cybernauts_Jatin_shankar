@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { updateUser } from "../services/api";
 import { setUsers } from "../redux/userSlice";
+
 const Flow = () => {
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.users.users);
@@ -19,9 +20,8 @@ const Flow = () => {
 
   useEffect(() => {
     const userColors = ["#6A5ACD", "#FF6347", "#2E8B57", "#FFD700", "#20B2AA"];
-    const gridSpacing = 400; // Increased spacing between nodes
-    const hobbySpacing = 150; // Increased spacing for hobby nodes
-    const gridWidth = Math.ceil(Math.sqrt(users.length)); // Number of nodes per row
+    const gridSpacingX = 300; // Horizontal spacing between user nodes
+    const gridSpacingY = 200; // Vertical spacing between user and hobby nodes
 
     // Create user nodes
     const userNodes = users.map((user, index) => ({
@@ -29,8 +29,8 @@ const Flow = () => {
       type: "default",
       data: { label: `${user.username} (${user.age})` },
       position: {
-        x: (index % gridWidth) * gridSpacing,
-        y: Math.floor(index / gridWidth) * gridSpacing,
+        x: (index % 4) * gridSpacingX, // Place 4 user nodes per row
+        y: Math.floor(index / 4) * gridSpacingY * 2, // Next row for every 4 users
       },
       style: {
         background: userColors[index % userColors.length],
@@ -38,6 +38,7 @@ const Flow = () => {
         border: "2px solid #FFFFFF",
         borderRadius: "8px",
         padding: "10px",
+        width: 150,
       },
     }));
 
@@ -48,14 +49,15 @@ const Flow = () => {
         type: "default",
         data: { label: hobby },
         position: {
-          x: (userIndex % gridWidth) * gridSpacing + hobbyIndex * hobbySpacing,
-          y: Math.floor(userIndex / gridWidth) * gridSpacing + gridSpacing,
+          x: userIndex * gridSpacingX + (hobbyIndex + 1) * 50,
+          y: Math.floor(userIndex / 4) * gridSpacingY * 2 + gridSpacingY,
         },
         style: {
           background: "#8F77B5",
           color: "#FFFFFF",
           border: "2px solid #FFFFFF",
           borderRadius: "8px",
+          width: 120,
         },
       }))
     );
@@ -95,7 +97,7 @@ const Flow = () => {
           x >= nodeX &&
           x <= nodeX + 150 &&
           y >= nodeY &&
-          y <= nodeY + 40 &&
+          y <= nodeY + 50 &&
           !node.id.startsWith("hobby-")
         );
       });
@@ -116,21 +118,21 @@ const Flow = () => {
                 )
               );
 
-              // Add new hobby node and edge
               const newNodeId = `hobby-${userToUpdate._id}-${updatedHobbies.length - 1}`;
               const newNode = {
                 id: newNodeId,
                 type: "default",
                 data: { label: hobby },
                 position: {
-                  x: closestNode.position.x + hobbySpacing,
-                  y: closestNode.position.y + hobbySpacing,
+                  x: closestNode.position.x + 50,
+                  y: closestNode.position.y + gridSpacingY,
                 },
                 style: {
                   background: "#8F77B5",
                   color: "#FFFFFF",
                   border: "2px solid #FFFFFF",
                   borderRadius: "8px",
+                  width: 120,
                 },
               };
 

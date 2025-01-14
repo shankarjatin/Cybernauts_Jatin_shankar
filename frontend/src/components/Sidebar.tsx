@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Search } from "lucide-react";
 
-const Sidebar = () => {
+const Sidebar = ({ className }: { className: string }) => {
   const [filter, setFilter] = useState("");
+  const [isOpen, setIsOpen] = useState(true); // Toggle for mobile
   const users = useSelector((state: RootState) => state.users.users);
 
-  // Get unique hobbies
   const allHobbies = Array.from(new Set(users.flatMap((user) => user.hobbies)));
   const filteredHobbies = allHobbies.filter((hobby) =>
     hobby.toLowerCase().includes(filter.toLowerCase())
@@ -19,7 +19,11 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="sticky top-0 w-72 h-screen bg-[#1E1E2F] shadow-md flex flex-col">
+    <aside
+      className={`${
+        isOpen ? "block" : "hidden"
+      } md:block sticky top-0 w-full md:w-72 h-screen bg-[#1E1E2F] shadow-md ${className}`}
+    >
       <div className="p-6">
         <h2 className="text-xl font-bold text-[#FFFFFF] mb-6">Hobbies</h2>
 
@@ -46,11 +50,7 @@ const Sidebar = () => {
                 key={index}
                 draggable
                 onDragStart={(e) => handleDragStart(e, hobby)}
-                className="
-                  p-3 bg-[#2A2A40] text-[#FFFFFF] rounded-md cursor-move
-                  border border-transparent hover:bg-[#8F77B5] hover:text-[#1E1E2F]
-                  transition-all duration-150
-                "
+                className="p-3 bg-[#2A2A40] text-[#FFFFFF] rounded-md cursor-move border border-transparent hover:bg-[#8F77B5] hover:text-[#1E1E2F] transition-all duration-150"
               >
                 {hobby}
               </div>
@@ -67,6 +67,14 @@ const Sidebar = () => {
           Drag a hobby to a user node to add it.
         </div>
       </div>
+
+      {/* Mobile Toggle */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="block md:hidden p-4 text-[#FFFFFF] bg-[#8F77B5] w-full"
+      >
+        {isOpen ? "Close" : "Open"} Sidebar
+      </button>
     </aside>
   );
 };
