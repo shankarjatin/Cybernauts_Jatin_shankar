@@ -12,7 +12,6 @@ export const fetchUsers = async (): Promise<User[]> => {
   return response.data;
 };
 
-
 // Create a new user
 export const createUser = async (user: User): Promise<User> => {
   const response = await api.post('/users', user);
@@ -24,6 +23,8 @@ export const updateUser = async (userId: string, user: User): Promise<User> => {
   const response = await api.put(`/users/${userId}`, user);
   return response.data;
 };
+
+
 
 // Delete a user
 export const deleteUser = async (userId: string): Promise<void> => {

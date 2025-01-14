@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createUser, updateUser } from '../services/api';
 import { RootState } from '../redux/store';
@@ -7,15 +7,14 @@ import { setUsers } from '../redux/userSlice';
 const UserForm = () => {
     const dispatch = useDispatch();
     const users = useSelector((state: RootState) => state.users.users);
-    const [user, setUser] = useState({
-        _id: '',
+    const [selectedUserId, setSelectedUserId] = useState('');
+    const [userDetails, setUserDetails] = useState({
         username: '',
         age: '',
         hobbies: []
     });
     const [isEditing, setIsEditing] = useState(false);
 
-    // List of predefined hobbies
     const hobbyOptions = [
         "Reading", "Gaming", "Traveling", "Hiking", "Swimming", "Cooking",
         "Gardening", "Blogging", "Photography", "Drawing", "Yoga",
@@ -23,30 +22,35 @@ const UserForm = () => {
         "Tennis", "Chess", "Singing", "DIY"
     ];
 
+    useEffect(() => {
+        if (selectedUserId) {
+            const selectedUser = users.find(user => user._id === selectedUserId);
+            setUserDetails({
+                username: selectedUser.username,
+                age: selectedUser.age.toString(),
+                hobbies: selectedUser.hobbies
+            });
+            setIsEditing(true);
+        } else {
+            setUserDetails({ username: '', age: '', hobbies: [] });
+            setIsEditing(false);
+        }
+    }, [selectedUserId, users]);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const userData = {
-            username: user.username,
-            age: parseInt(user.age, 10),
-            hobbies: user.hobbies
-        };
-
+        const { username, age, hobbies } = userDetails;
         try {
             let response;
             if (isEditing) {
-                response = await updateUser(user._id, userData);
+                response = await updateUser(selectedUserId, { username, age: parseInt(age, 10), hobbies });
+                dispatch(setUsers(users.map(user => user._id === selectedUserId ? { ...user, ...response } : user)));
             } else {
-                response = await createUser(userData);
-            }
-
-            if (response) {
+                response = await createUser({ username, age: parseInt(age, 10), hobbies });
                 dispatch(setUsers([...users, response]));
-                alert('User saved successfully!');
-                setUser({ _id: '', username: '', age: '', hobbies: [] });
-                setIsEditing(false);
-            } else {
-                throw new Error('No data returned from API');
             }
+            alert('User saved successfully!');
+            resetForm();
         } catch (error) {
             console.error('Error saving user:', error);
             alert('Failed to save user. See console for details.');
@@ -54,45 +58,65 @@ const UserForm = () => {
     };
 
     const handleChange = (e) => {
-        if (e.target.name === "hobbies") {
+        const { name, value } = e.target;
+        if (name === "hobbies") {
             const valueArray = Array.from(e.target.selectedOptions, option => option.value);
-            setUser({ ...user, hobbies: valueArray });
+            setUserDetails(prev => ({ ...prev, hobbies: valueArray }));
         } else {
-            setUser({ ...user, [e.target.name]: e.target.value });
+            setUserDetails(prev => ({ ...prev, [name]: value }));
         }
     };
 
+    const resetForm = () => {
+        setSelectedUserId('');
+        setUserDetails({ username: '', age: '', hobbies: [] });
+        setIsEditing(false);
+    };
+
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={user.username}
-                onChange={handleChange}
-                required
-            />
-            <input
-                type="number"
-                name="age"
-                placeholder="Age"
-                value={user.age}
-                onChange={handleChange}
-                required
-            />
-            <select
-                name="hobbies"
-                multiple
-                value={user.hobbies}
-                onChange={handleChange}
-                style={{ width: '100%', height: '100px', overflow: 'auto' }}
-            >
-                {hobbyOptions.map(hobby => (
-                    <option key={hobby} value={hobby}>{hobby}</option>
+        <div>
+            <select value={selectedUserId} onChange={e => setSelectedUserId(e.target.value)}>
+                <option value="">Create New User</option>
+                {users.map(user => (
+                    <option key={user._id} value={user._id}>{user.username}</option>
                 ))}
             </select>
-            <button type="submit">{isEditing ? 'Update' : 'Create'} User</button>
-        </form>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    value={userDetails.username}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="number"
+                    name="age"
+                    placeholder="Age"
+                    value={userDetails.age}
+                    onChange={handleChange}
+                    required
+                />
+                <select
+                    name="hobbies"
+                    multiple
+                    value={userDetails.hobbies}
+                    onChange={handleChange}
+                    style={{ width: '100%', height: '100px', overflow: 'auto' }}
+                >
+                    {hobbyOptions.map(hobby => (
+                        <option key={hobby} value={hobby}>{hobby}</option>
+                    ))}
+                </select>
+                <button type="submit">{isEditing ? 'Update User' : 'Create User'}</button>
+                {isEditing && (
+                    <button type="button" onClick={resetForm}>
+                        Cancel Edit
+                    </button>
+                )}
+            </form>
+        </div>
     );
 };
 
