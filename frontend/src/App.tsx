@@ -11,15 +11,15 @@ const App = () => {
     <Provider store={store}>
       <div className="flex h-screen bg-[#1E1E2F]">
         {/* Sidebar */}
-        <Sidebar />
+        <Sidebar className="h-full" />
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex flex-1 flex-col">
           <div className="p-4 bg-[#1E1E2F] z-10 relative">
             {/* User Form */}
             <UserForm compact={true} />
           </div>
-          <div className="flex-1 p-4 -mt-4">
+          <div className="flex-1 p-4">
             {/* Visualization */}
             <MainVisualization />
           </div>
