@@ -30,3 +30,5 @@ const userSlice = createSlice({
 
 export const { setUsers } = userSlice.actions;
 export default userSlice.reducer;
+
+// Redux slice or actions

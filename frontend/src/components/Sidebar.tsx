@@ -15,11 +15,10 @@ const Sidebar = () => {
     );
 
     const handleDragStart = (event, hobby) => {
-        event.dataTransfer.setData("application/reactflow-hobby", hobby);
-        event.dataTransfer.effectAllowed = "move";
-        setDraggedHobby(hobby);
-    };
-
+      event.dataTransfer.setData("application/reactflow-hobby", hobby);
+      event.dataTransfer.effectAllowed = "move";
+  };
+  
     const handleDragEnd = () => {
         setDraggedHobby(null);
     };
