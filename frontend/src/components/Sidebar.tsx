@@ -5,11 +5,13 @@ import { RootState } from '../redux/store';
 const Sidebar = () => {
     const [filter, setFilter] = useState('');
     const users = useSelector((state: RootState) => state.users.users);
-
-    // Extracting unique hobbies from all users
     const allHobbies = Array.from(new Set(users.flatMap(user => user.hobbies)));
-
     const filteredHobbies = allHobbies.filter(hobby => hobby.toLowerCase().includes(filter.toLowerCase()));
+
+    const handleDragStart = (event, hobby) => {
+        event.dataTransfer.setData("application/reactflow", hobby);
+        event.dataTransfer.effectAllowed = "move";
+    };
 
     return (
         <aside style={{ width: '250px', padding: '20px', background: '#f0f0f0' }}>
@@ -22,7 +24,7 @@ const Sidebar = () => {
             />
             <ul>
                 {filteredHobbies.map((hobby, index) => (
-                    <li key={index} draggable onDragStart={(e) => e.dataTransfer.setData("text/plain", hobby)}>
+                    <li key={index} draggable onDragStart={(e) => handleDragStart(e, hobby)}>
                         {hobby}
                     </li>
                 ))}
