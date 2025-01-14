@@ -19,10 +19,11 @@ const Flow = () => {
 
   useEffect(() => {
     const userColors = ["#6A5ACD", "#FF6347", "#2E8B57", "#FFD700", "#20B2AA"];
-    const gridSpacing = 200; // Spacing between nodes
+    const gridSpacing = 400; // Increased spacing between nodes
+    const hobbySpacing = 150; // Increased spacing for hobby nodes
     const gridWidth = Math.ceil(Math.sqrt(users.length)); // Number of nodes per row
 
-    // Create user nodes with grid-based positions
+    // Create user nodes
     const userNodes = users.map((user, index) => ({
       id: user._id,
       type: "default",
@@ -40,14 +41,14 @@ const Flow = () => {
       },
     }));
 
-    // Create hobby nodes, positioned below their respective user nodes
+    // Create hobby nodes
     const hobbyNodes = users.flatMap((user, userIndex) =>
       user.hobbies.map((hobby, hobbyIndex) => ({
         id: `hobby-${user._id}-${hobbyIndex}`,
         type: "default",
         data: { label: hobby },
         position: {
-          x: (userIndex % gridWidth) * gridSpacing + hobbyIndex * 50,
+          x: (userIndex % gridWidth) * gridSpacing + hobbyIndex * hobbySpacing,
           y: Math.floor(userIndex / gridWidth) * gridSpacing + gridSpacing,
         },
         style: {
@@ -122,8 +123,8 @@ const Flow = () => {
                 type: "default",
                 data: { label: hobby },
                 position: {
-                  x: closestNode.position.x + Math.random() * 50,
-                  y: closestNode.position.y + Math.random() * 50,
+                  x: closestNode.position.x + hobbySpacing,
+                  y: closestNode.position.y + hobbySpacing,
                 },
                 style: {
                   background: "#8F77B5",
