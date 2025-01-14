@@ -1,52 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../redux/store';
-import { Hobby } from '../types/hobby';
-import { setHobbies } from '../redux/hobbySlice';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
-const Sidebar: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const hobbies = useSelector((state: RootState) => state.hobbies.hobbies);
-  const [search, setSearch] = useState('');
+const Sidebar = () => {
+    const [filter, setFilter] = useState('');
+    const users = useSelector((state: RootState) => state.users.users);
 
-  useEffect(() => {
-    const fetchHobbies = async () => {
-      const fetchedHobbies = await fetchHobbies();
-      dispatch(setHobbies(fetchedHobbies));
-    };
-    fetchHobbies();
-  }, [dispatch]);
+    // Extracting unique hobbies from all users
+    const allHobbies = Array.from(new Set(users.flatMap(user => user.hobbies)));
 
-  const handleDragStart = (e: React.DragEvent, hobby: Hobby) => {
-    e.dataTransfer.setData('hobby', JSON.stringify(hobby));
-  };
+    const filteredHobbies = allHobbies.filter(hobby => hobby.toLowerCase().includes(filter.toLowerCase()));
 
-  const filteredHobbies = hobbies.filter((hobby) =>
-    hobby.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  return (
-    <div style={{ width: '300px', padding: '10px', border: '1px solid #ddd' }}>
-      <h3>Available Hobbies</h3>
-      <input
-        type="text"
-        placeholder="Search hobbies"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ marginBottom: '10px', padding: '5px', width: '100%' }}
-      />
-      {filteredHobbies.map((hobby) => (
-        <div
-          key={hobby.id}
-          draggable
-          onDragStart={(e) => handleDragStart(e, hobby)}
-          style={{ padding: '10px', marginBottom: '5px', backgroundColor: '#f0f0f0' }}
-        >
-          {hobby.name}
-        </div>
-      ))}
-    </div>
-  );
+    return (
+        <aside style={{ width: '250px', padding: '20px', background: '#f0f0f0' }}>
+            <input
+                type="text"
+                placeholder="Search hobbies"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                style={{ marginBottom: '10px', width: '100%', padding: '5px' }}
+            />
+            <ul>
+                {filteredHobbies.map((hobby, index) => (
+                    <li key={index} draggable onDragStart={(e) => e.dataTransfer.setData("text/plain", hobby)}>
+                        {hobby}
+                    </li>
+                ))}
+            </ul>
+        </aside>
+    );
 };
 
 export default Sidebar;

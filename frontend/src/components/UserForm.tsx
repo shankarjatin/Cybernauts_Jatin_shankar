@@ -1,73 +1,82 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { createUser, updateUser } from '../services/api';
+import { RootState } from '../redux/store';
 import { setUsers } from '../redux/userSlice';
-import { createUser } from '../services/api';
-import { User } from '../types/user';
-import { toast } from 'react-toastify';
 
-const UserForm: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [age, setAge] = useState(18);
-  const [hobbies, setHobbies] = useState<string[]>([]);
-  const dispatch = useDispatch();
+const UserForm = () => {
+    const dispatch = useDispatch();
+    const users = useSelector((state: RootState) => state.users.users);  // Fetching users from Redux store
+    const [user, setUser] = useState({
+        _id: '', // For updates
+        username: '',
+        age: '',
+        hobbies: ''
+    });
+    const [isEditing, setIsEditing] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username || !age || hobbies.length === 0) {
-      toast.error('All fields are required!');
-      return;
-    }
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const userData = {
+            username: user.username,
+            age: parseInt(user.age, 10),
+            hobbies: user.hobbies.split(',').map(hobby => hobby.trim())
+        };
 
-    const newUser: User = {
-      id: Date.now().toString(),
-      username,
-      age,
-      hobbies,
+        try {
+            let response;
+            if (isEditing) {
+                response = await updateUser(user._id, userData);
+            } else {
+                response = await createUser(userData);
+            }
+
+            if (response) {
+                dispatch(setUsers([...users, response]));  // Update users array in Redux store
+                alert('User saved successfully!');
+                setUser({ _id: '', username: '', age: '', hobbies: '' }); // Reset form
+                setIsEditing(false); // Reset editing state
+            } else {
+                throw new Error('No data returned from API');
+            }
+        } catch (error) {
+            console.error('Error saving user:', error);
+            alert('Failed to save user. See console for details.');
+        }
     };
 
-    try {
-      const createdUser = await createUser(newUser);
-      dispatch(setUsers([createdUser])); // Add user to store
-      toast.success('User created successfully!');
-      setUsername('');
-      setAge(18);
-      setHobbies([]);
-    } catch (error) {
-      toast.error('Failed to create user!');
-    }
-  };
+    const handleChange = (e) => {
+        setUser({ ...user, [e.target.name]: e.target.value });
+    };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Username:</label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Age:</label>
-        <input
-          type="number"
-          value={age}
-          onChange={(e) => setAge(Number(e.target.value))}
-          required
-        />
-      </div>
-      <div>
-        <label>Hobbies:</label>
-        <input
-          type="text"
-          value={hobbies.join(', ')}
-          onChange={(e) => setHobbies(e.target.value.split(', '))}
-        />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
-  );
+    return (
+        <form onSubmit={handleSubmit}>
+            <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={user.username}
+                onChange={handleChange}
+                required
+            />
+            <input
+                type="number"
+                name="age"
+                placeholder="Age"
+                value={user.age}
+                onChange={handleChange}
+                required
+            />
+            <input
+                type="text"
+                name="hobbies"
+                placeholder="Hobbies (comma-separated)"
+                value={user.hobbies}
+                onChange={handleChange}
+            />
+            <button type="submit">{isEditing ? 'Update' : 'Create'} User</button>
+        </form>
+    );
 };
 
 export default UserForm;

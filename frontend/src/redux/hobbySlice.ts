@@ -1,23 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-interface Hobby {
-  id: string;
-  name: string;
-}
-
-interface HobbyState {
-  hobbies: Hobby[];
-}
-
-const initialState: HobbyState = {
-  hobbies: [],
-};
-
-const hobbySlice = createSlice({
+export const hobbySlice = createSlice({
   name: 'hobbies',
-  initialState,
+  initialState: { hobbies: [] },
   reducers: {
-    setHobbies(state, action: PayloadAction<Hobby[]>) {
+    setHobbies(state, action) {
       state.hobbies = action.payload;
     },
   },
