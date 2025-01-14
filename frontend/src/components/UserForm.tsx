@@ -103,20 +103,16 @@ const UserForm = () => {
   };
 
   return (
-    <div className="w-full h-500 bg-[#FBF5E5] flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-lg p-6 flex items-center w-3/4"
-      >
-        {/* Left Section */}
-        <div className="w-1/3 p-4 space-y-4">
-          <h2 className="text-xl font-bold text-[#212121]">
-            {isEditing ? "Edit User" : "Create User"}
-          </h2>
+    <div className="bg-[#2A2A40] shadow-lg rounded-lg p-8">
+      <h2 className="text-2xl font-bold text-[#FFFFFF] mb-6">
+        {isEditing ? "Edit User" : "Create User"}
+      </h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
           <select
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
-            className="w-full px-4 py-2 border border-[#C890A7] rounded-md focus:outline-none focus:ring-2 focus:ring-[#A35C7A]"
+            className="w-full px-4 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
           >
             <option value="">Create New User</option>
             {users.map((user) => (
@@ -125,6 +121,8 @@ const UserForm = () => {
               </option>
             ))}
           </select>
+        </div>
+        <div className="mb-4">
           <input
             type="text"
             name="username"
@@ -133,9 +131,11 @@ const UserForm = () => {
             onChange={(e) =>
               setUserDetails({ ...userDetails, username: e.target.value })
             }
-            className="w-full px-4 py-2 border border-[#C890A7] rounded-md focus:outline-none focus:ring-2 focus:ring-[#A35C7A]"
+            className="w-full px-4 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
             required
           />
+        </div>
+        <div className="mb-4">
           <input
             type="number"
             name="age"
@@ -144,45 +144,32 @@ const UserForm = () => {
             onChange={(e) =>
               setUserDetails({ ...userDetails, age: e.target.value })
             }
-            className="w-full px-4 py-2 border border-[#C890A7] rounded-md focus:outline-none focus:ring-2 focus:ring-[#A35C7A]"
+            className="w-full px-4 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
             required
           />
         </div>
-
-        {/* Right Section */}
-        <div className="w-2/3 p-4">
-          <label className="block text-[#212121] mb-2">Hobbies:</label>
-          <div className="grid grid-cols-3 gap-4 max-h-40 overflow-y-auto">
+        <div className="mb-6">
+          <label className="block text-[#FFFFFF] mb-2">Hobbies:</label>
+          <div className="grid grid-cols-2 gap-2">
             {hobbyOptions.map((hobby) => (
               <label key={hobby} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   checked={userDetails.hobbies.includes(hobby)}
                   onChange={() => handleCheckboxChange(hobby)}
-                  className="h-4 w-4 text-[#A35C7A] focus:ring-[#A35C7A]"
+                  className="h-4 w-4 text-[#8F77B5] focus:ring-[#8F77B5]"
                 />
-                <span className="text-[#212121]">{hobby}</span>
+                <span className="text-[#FFFFFF]">{hobby}</span>
               </label>
             ))}
           </div>
-          <div className="mt-6 flex space-x-4">
-            <button
-              type="submit"
-              className="px-6 py-2 bg-[#A35C7A] text-white rounded-md hover:bg-[#C890A7] focus:outline-none focus:ring-2 focus:ring-[#C890A7]"
-            >
-              {isEditing ? "Update User" : "Create User"}
-            </button>
-            {isEditing && (
-              <button
-                type="button"
-                onClick={resetForm}
-                className="px-6 py-2 bg-gray-200 text-[#212121] rounded-md hover:bg-gray-300 focus:outline-none"
-              >
-                Cancel
-              </button>
-            )}
-          </div>
         </div>
+        <button
+          type="submit"
+          className="w-full py-2 bg-[#8F77B5] text-[#FFFFFF] rounded-md hover:bg-[#A8A3D1] focus:outline-none focus:ring-2 focus:ring-[#A8A3D1]"
+        >
+          {isEditing ? "Update User" : "Create User"}
+        </button>
       </form>
     </div>
   );
