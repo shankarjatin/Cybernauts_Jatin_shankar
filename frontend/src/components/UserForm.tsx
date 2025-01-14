@@ -4,7 +4,11 @@ import { createUser, updateUser } from "../services/api";
 import { RootState } from "../redux/store";
 import { setUsers } from "../redux/userSlice";
 
-const UserForm = () => {
+interface UserFormProps {
+  compact?: boolean;
+}
+
+const UserForm: React.FC<UserFormProps> = ({ compact = false }) => {
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.users.users);
   const [selectedUserId, setSelectedUserId] = useState("");
@@ -103,70 +107,84 @@ const UserForm = () => {
   };
 
   return (
-    <div className="bg-[#2A2A40] shadow-lg rounded-lg p-8">
-      <h2 className="text-2xl font-bold text-[#FFFFFF] mb-6">
-        {isEditing ? "Edit User" : "Create User"}
-      </h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <select
-            value={selectedUserId}
-            onChange={(e) => setSelectedUserId(e.target.value)}
-            className="w-full px-4 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
+    <div
+      className={`${
+        compact ? "bg-transparent" : "bg-[#2A2A40] shadow-lg"
+      } rounded-lg p-4`}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="flex items-center space-x-4"
+      >
+        {/* Select User for Edit */}
+        <select
+          value={selectedUserId}
+          onChange={(e) => setSelectedUserId(e.target.value)}
+          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
+        >
+          <option value="">Create New User</option>
+          {users.map((user) => (
+            <option key={user._id} value={user._id}>
+              {user.username}
+            </option>
+          ))}
+        </select>
+
+        {/* Username Input */}
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={userDetails.username}
+          onChange={(e) =>
+            setUserDetails({ ...userDetails, username: e.target.value })
+          }
+          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
+          required
+        />
+
+        {/* Age Input */}
+        <input
+          type="number"
+          name="age"
+          placeholder="Age"
+          value={userDetails.age}
+          onChange={(e) =>
+            setUserDetails({ ...userDetails, age: e.target.value })
+          }
+          className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
+          required
+        />
+
+        {/* Hobbies Dropdown */}
+        <div className="relative">
+          <button
+            type="button"
+            className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
           >
-            <option value="">Create New User</option>
-            {users.map((user) => (
-              <option key={user._id} value={user._id}>
-                {user.username}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={userDetails.username}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, username: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            type="number"
-            name="age"
-            placeholder="Age"
-            value={userDetails.age}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, age: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-[#FFFFFF] mb-2">Hobbies:</label>
-          <div className="grid grid-cols-2 gap-2">
-            {hobbyOptions.map((hobby) => (
-              <label key={hobby} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={userDetails.hobbies.includes(hobby)}
-                  onChange={() => handleCheckboxChange(hobby)}
-                  className="h-4 w-4 text-[#8F77B5] focus:ring-[#8F77B5]"
-                />
-                <span className="text-[#FFFFFF]">{hobby}</span>
-              </label>
-            ))}
+            Select Hobbies
+          </button>
+          <div className="absolute mt-2 bg-[#2A2A40] border border-[#8F77B5] rounded-md shadow-lg w-48">
+            <ul className="p-2 max-h-40 overflow-y-auto">
+              {hobbyOptions.map((hobby) => (
+                <li key={hobby} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={userDetails.hobbies.includes(hobby)}
+                    onChange={() => handleCheckboxChange(hobby)}
+                    className="h-4 w-4 text-[#8F77B5] focus:ring-[#8F77B5]"
+                  />
+                  <span className="text-[#FFFFFF]">{hobby}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
+
+        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-2 bg-[#8F77B5] text-[#FFFFFF] rounded-md hover:bg-[#A8A3D1] focus:outline-none focus:ring-2 focus:ring-[#A8A3D1]"
+          className="px-4 py-2 bg-[#8F77B5] text-[#FFFFFF] rounded-md hover:bg-[#A8A3D1] focus:outline-none focus:ring-2 focus:ring-[#A8A3D1]"
         >
           {isEditing ? "Update User" : "Create User"}
         </button>
