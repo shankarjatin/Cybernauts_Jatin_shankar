@@ -11,7 +11,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { updateUser } from "../services/api";
 import { setUsers } from "../redux/userSlice";
-
 const Flow = () => {
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.users.users);
@@ -20,13 +19,18 @@ const Flow = () => {
 
   useEffect(() => {
     const userColors = ["#6A5ACD", "#FF6347", "#2E8B57", "#FFD700", "#20B2AA"];
+    const gridSpacing = 200; // Spacing between nodes
+    const gridWidth = Math.ceil(Math.sqrt(users.length)); // Number of nodes per row
 
-    // Create user nodes
+    // Create user nodes with grid-based positions
     const userNodes = users.map((user, index) => ({
       id: user._id,
       type: "default",
       data: { label: `${user.username} (${user.age})` },
-      position: { x: Math.random() * 400, y: Math.random() * 400 },
+      position: {
+        x: (index % gridWidth) * gridSpacing,
+        y: Math.floor(index / gridWidth) * gridSpacing,
+      },
       style: {
         background: userColors[index % userColors.length],
         color: "#FFFFFF",
@@ -36,13 +40,16 @@ const Flow = () => {
       },
     }));
 
-    // Create hobby nodes
-    const hobbyNodes = users.flatMap((user) =>
-      user.hobbies.map((hobby, index) => ({
-        id: `hobby-${user._id}-${index}`,
+    // Create hobby nodes, positioned below their respective user nodes
+    const hobbyNodes = users.flatMap((user, userIndex) =>
+      user.hobbies.map((hobby, hobbyIndex) => ({
+        id: `hobby-${user._id}-${hobbyIndex}`,
         type: "default",
         data: { label: hobby },
-        position: { x: Math.random() * 400, y: Math.random() * 400 },
+        position: {
+          x: (userIndex % gridWidth) * gridSpacing + hobbyIndex * 50,
+          y: Math.floor(userIndex / gridWidth) * gridSpacing + gridSpacing,
+        },
         style: {
           background: "#8F77B5",
           color: "#FFFFFF",
