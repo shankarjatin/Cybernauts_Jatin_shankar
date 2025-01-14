@@ -18,6 +18,7 @@ const UserForm: React.FC<UserFormProps> = ({ compact = false }) => {
     hobbies: [],
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown toggle
 
   const hobbyOptions = [
     "Reading",
@@ -112,10 +113,7 @@ const UserForm: React.FC<UserFormProps> = ({ compact = false }) => {
         compact ? "bg-transparent" : "bg-[#2A2A40] shadow-lg"
       } rounded-lg p-4`}
     >
-      <form
-        onSubmit={handleSubmit}
-        className="flex items-center space-x-4"
-      >
+      <form onSubmit={handleSubmit} className="flex items-center space-x-4">
         {/* Select User for Edit */}
         <select
           value={selectedUserId}
@@ -160,25 +158,28 @@ const UserForm: React.FC<UserFormProps> = ({ compact = false }) => {
         <div className="relative">
           <button
             type="button"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
             className="px-3 py-2 border border-[#8F77B5] bg-[#1E1E2F] text-[#FFFFFF] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8F77B5]"
           >
             Select Hobbies
           </button>
-          <div className="absolute mt-2 bg-[#2A2A40] border border-[#8F77B5] rounded-md shadow-lg w-48">
-            <ul className="p-2 max-h-40 overflow-y-auto">
-              {hobbyOptions.map((hobby) => (
-                <li key={hobby} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={userDetails.hobbies.includes(hobby)}
-                    onChange={() => handleCheckboxChange(hobby)}
-                    className="h-4 w-4 text-[#8F77B5] focus:ring-[#8F77B5]"
-                  />
-                  <span className="text-[#FFFFFF]">{hobby}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {dropdownOpen && (
+            <div className="absolute mt-2 bg-[#2A2A40] border border-[#8F77B5] rounded-md shadow-lg w-48 z-20">
+              <ul className="p-2 max-h-40 overflow-y-auto">
+                {hobbyOptions.map((hobby) => (
+                  <li key={hobby} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={userDetails.hobbies.includes(hobby)}
+                      onChange={() => handleCheckboxChange(hobby)}
+                      className="h-4 w-4 text-[#8F77B5] focus:ring-[#8F77B5]"
+                    />
+                    <span className="text-[#FFFFFF]">{hobby}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}
