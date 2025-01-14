@@ -6,21 +6,29 @@ import { setUsers } from '../redux/userSlice';
 
 const UserForm = () => {
     const dispatch = useDispatch();
-    const users = useSelector((state: RootState) => state.users.users);  // Fetching users from Redux store
+    const users = useSelector((state: RootState) => state.users.users);
     const [user, setUser] = useState({
-        _id: '', // For updates
+        _id: '',
         username: '',
         age: '',
-        hobbies: ''
+        hobbies: []
     });
     const [isEditing, setIsEditing] = useState(false);
+
+    // List of predefined hobbies
+    const hobbyOptions = [
+        "Reading", "Gaming", "Traveling", "Hiking", "Swimming", "Cooking",
+        "Gardening", "Blogging", "Photography", "Drawing", "Yoga",
+        "Dancing", "Cycling", "Fishing", "Boxing", "Running",
+        "Tennis", "Chess", "Singing", "DIY"
+    ];
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const userData = {
             username: user.username,
             age: parseInt(user.age, 10),
-            hobbies: user.hobbies.split(',').map(hobby => hobby.trim())
+            hobbies: user.hobbies
         };
 
         try {
@@ -32,10 +40,10 @@ const UserForm = () => {
             }
 
             if (response) {
-                dispatch(setUsers([...users, response]));  // Update users array in Redux store
+                dispatch(setUsers([...users, response]));
                 alert('User saved successfully!');
-                setUser({ _id: '', username: '', age: '', hobbies: '' }); // Reset form
-                setIsEditing(false); // Reset editing state
+                setUser({ _id: '', username: '', age: '', hobbies: [] });
+                setIsEditing(false);
             } else {
                 throw new Error('No data returned from API');
             }
@@ -46,7 +54,12 @@ const UserForm = () => {
     };
 
     const handleChange = (e) => {
-        setUser({ ...user, [e.target.name]: e.target.value });
+        if (e.target.name === "hobbies") {
+            const valueArray = Array.from(e.target.selectedOptions, option => option.value);
+            setUser({ ...user, hobbies: valueArray });
+        } else {
+            setUser({ ...user, [e.target.name]: e.target.value });
+        }
     };
 
     return (
@@ -67,13 +80,17 @@ const UserForm = () => {
                 onChange={handleChange}
                 required
             />
-            <input
-                type="text"
+            <select
                 name="hobbies"
-                placeholder="Hobbies (comma-separated)"
+                multiple
                 value={user.hobbies}
                 onChange={handleChange}
-            />
+                style={{ width: '100%', height: '100px', overflow: 'auto' }}
+            >
+                {hobbyOptions.map(hobby => (
+                    <option key={hobby} value={hobby}>{hobby}</option>
+                ))}
+            </select>
             <button type="submit">{isEditing ? 'Update' : 'Create'} User</button>
         </form>
     );
