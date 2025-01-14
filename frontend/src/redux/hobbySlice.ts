@@ -1,17 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Hobby } from '../types/hobby';
+
+interface Hobby {
+  id: string;
+  name: string;
+}
 
 interface HobbyState {
   hobbies: Hobby[];
 }
 
 const initialState: HobbyState = {
-  hobbies: [
-    { id: '1', name: 'Reading' },
-    { id: '2', name: 'Coding' },
-    { id: '3', name: 'Music' },
-    { id: '4', name: 'Gaming' },
-  ],
+  hobbies: [],
 };
 
 const hobbySlice = createSlice({

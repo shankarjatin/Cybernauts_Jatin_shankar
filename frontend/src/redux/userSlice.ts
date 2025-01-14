@@ -29,17 +29,15 @@ const userSlice = createSlice({
     addUser(state, action: PayloadAction<User>) {
       state.users.push(action.payload);
     },
-    updateUser(state, action: PayloadAction<User>) {
-      const index = state.users.findIndex(user => user.id === action.payload.id);
-      if (index !== -1) {
-        state.users[index] = action.payload;
+    addHobbyToUser(state, action: PayloadAction<{ userId: string; hobby: string }>) {
+      const { userId, hobby } = action.payload;
+      const user = state.users.find((user) => user.id === userId);
+      if (user) {
+        user.hobbies.push(hobby);
       }
-    },
-    removeUser(state, action: PayloadAction<string>) {
-      state.users = state.users.filter(user => user.id !== action.payload);
     },
   },
 });
 
-export const { setUsers, setLoading, setError, addUser, updateUser, removeUser } = userSlice.actions;
+export const { setUsers, setLoading, setError, addUser, addHobbyToUser } = userSlice.actions;
 export default userSlice.reducer;

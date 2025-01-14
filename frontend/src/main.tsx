@@ -1,10 +1,18 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import App from './App';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+// Find the root element
+const rootElement = document.getElementById('root');
+
+// Create the root with React 18's `createRoot` method
+const root = ReactDOM.createRoot(rootElement!);
+
+// Render the app
+root.render(
+  <Provider store={store}>
     <App />
-  </StrictMode>,
-)
+  </Provider>
+);

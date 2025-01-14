@@ -5,12 +5,14 @@ const cluster = require('cluster');
 const os = require('os');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const cors = require('cors');
 
 dotenv.config();
 connectDB();
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 // Middleware
 app.use(bodyParser.json());
 
