@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cors = require('cors');
 const cron = require('node-cron');
+const axios = require('axios');
 dotenv.config();
 connectDB();
 const app = express();
