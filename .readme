@@ -4,20 +4,6 @@ Cubernatus is a web application that allows users to create, manage, and visuali
 
 ---
 
-## Table of Contents
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Setup and Installation](#setup-and-installation)
-- [Environment Variables](#environment-variables)
-- [API Endpoints](#api-endpoints)
-- [Screenshots & GIFs](#screenshots--gifs)
-- [Postman Collection](#postman-collection)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
 ## Features
 
 - Create, edit, delete, and retrieve user profiles.
@@ -51,3 +37,15 @@ Cubernatus is a web application that allows users to create, manage, and visuali
    ```bash
    npm install
    node index.js
+
+### Frontend Setup:
+1. Navigate to the `frontend` folder.
+2. Run the following commands:
+   ```bash
+   npm install
+   npm runn dev
+
+### ENV variables:
+PORT=3000
+MONGO_URI=your_mongo_uri
+
