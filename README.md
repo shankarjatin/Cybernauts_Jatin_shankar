@@ -190,5 +190,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <strong>Made with ❤️ by The Cybernatus Team</strong>
+  <strong>Made with ❤️ by Jatin Shankar Srivastava</strong>
 </div>
