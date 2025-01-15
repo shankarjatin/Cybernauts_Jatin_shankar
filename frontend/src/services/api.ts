@@ -3,7 +3,8 @@ import { User } from '../types/user';
 import { Hobby } from '../types/hobby';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api', // Replace with the actual backend URL
+  // baseURL: 'http://localhost:3000/api', 
+  baseURL: 'https://cybernauts-jatin-shankar.onrender.com/api' // Replace with the actual backend URL
 });
 
 // Fetch all users
