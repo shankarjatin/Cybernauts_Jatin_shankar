@@ -1,0 +1,53 @@
+# Cubernatus
+
+Cubernatus is a web application that allows users to create, manage, and visualize user profiles with hobbies using a modern UI. It combines a powerful backend with a responsive and interactive frontend to deliver an exceptional user experience.
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Setup and Installation](#setup-and-installation)
+- [Environment Variables](#environment-variables)
+- [API Endpoints](#api-endpoints)
+- [Screenshots & GIFs](#screenshots--gifs)
+- [Postman Collection](#postman-collection)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+
+- Create, edit, delete, and retrieve user profiles.
+- Add hobbies to users via a draggable interface.
+- Visualize relationships between users and hobbies with a React Flow interface.
+- Fully responsive for both desktop and mobile screens.
+- Toast notifications for user feedback (success and errors).
+
+---
+
+## Tech Stack
+
+### Frontend:
+- **React** (with TypeScript)
+- **React Flow Renderer** (for graph visualizations)
+- **TailwindCSS** (for styling)
+- **React Toastify** (for notifications)
+
+### Backend:
+- **Node.js**
+- **Express.js**
+- **MongoDB** (via Mongoose)
+
+---
+
+## Setup and Installation
+
+### Backend Setup:
+1. Navigate to the `backend` folder.
+2. Run the following commands:
+   ```bash
+   npm install
+   node index.js
